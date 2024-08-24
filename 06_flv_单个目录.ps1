@@ -1,40 +1,40 @@
-# ÉèÖÃFFmpegµÄÂ·¾¶£¬È·±£FFmpegÒÑ°²×°²¢ÔÚÏµÍ³Â·¾¶ÖĞ
+# è®¾ç½®FFmpegçš„è·¯å¾„ï¼Œç¡®ä¿FFmpegå·²å®‰è£…å¹¶åœ¨ç³»ç»Ÿè·¯å¾„ä¸­
 $ffmpegPath = "ffmpeg"
 
-# ÉèÖÃÊäÈëÎÄ¼ş¼ĞºÍÊä³öÎÄ¼şÃû
-$inputFolder = Read-Host "ÇëÊäÈëÊÓÆµÂ·¾¶"
-$outputFileName = Read-Host "ÇëÊäÈëºÏ²¢ºóÊÓÆµÃû³ÆºÍºó×ºÃû"
+# è®¾ç½®è¾“å…¥æ–‡ä»¶å¤¹å’Œè¾“å‡ºæ–‡ä»¶å
+$inputFolder = Read-Host "è¯·è¾“å…¥è§†é¢‘è·¯å¾„"
+$outputFileName = Read-Host "è¯·è¾“å…¥åˆå¹¶åè§†é¢‘åç§°å’Œåç¼€å"
 
-# »ñÈ¡ÎÄ¼ş¼ĞÖĞËùÓĞmp4ÎÄ¼ş
+# è·å–æ–‡ä»¶å¤¹ä¸­æ‰€æœ‰mp4æ–‡ä»¶
 $mp4Files = Get-ChildItem -Path $inputFolder -Filter *.flv
 
-# ÓÃÓÚ´æ´¢tsÎÄ¼şµÄÊı×é
+# ç”¨äºå­˜å‚¨tsæ–‡ä»¶çš„æ•°ç»„
 $tsFiles = @()
 
-# ±éÀúÃ¿¸ömp4ÎÄ¼ş£¬½øĞĞ×ª»»
+# éå†æ¯ä¸ªmp4æ–‡ä»¶ï¼Œè¿›è¡Œè½¬æ¢
 foreach ($mp4File in $mp4Files) {
-    # ¹¹½¨Êä³öµÄtsÎÄ¼şÃû
+    # æ„å»ºè¾“å‡ºçš„tsæ–‡ä»¶å
     $tsFileName = [System.IO.Path]::ChangeExtension($mp4File.Name, ".ts")
 
-    # ¹¹½¨ÍêÕûµÄFFmpegÃüÁî
+    # æ„å»ºå®Œæ•´çš„FFmpegå‘½ä»¤
     # $ffmpegCommand = "$ffmpegPath -i `"$inputFolder\$mp4File`" -vcodec copy -acodec copy -vbsf h264_mp4toannexb `"$tsFileName`""
 	$ffmpegCommand = "$ffmpegPath -i `"$inputFolder\$mp4File`" -vcodec copy -acodec copy `"$tsFileName`""
 
-    # Ö´ĞĞFFmpegÃüÁî
+    # æ‰§è¡ŒFFmpegå‘½ä»¤
     Invoke-Expression $ffmpegCommand
 
-    # ½«Éú³ÉµÄtsÎÄ¼şÌí¼Óµ½Êı×é
+    # å°†ç”Ÿæˆçš„tsæ–‡ä»¶æ·»åŠ åˆ°æ•°ç»„
     $tsFiles += $tsFileName
 }
 
-# ¹¹½¨ºÏ²¢tsÎÄ¼şµÄÃüÁî
+# æ„å»ºåˆå¹¶tsæ–‡ä»¶çš„å‘½ä»¤
 # $concatenationCommand = "$ffmpegPath -i `"concat:" + ($tsFiles -join "|") + "`" -acodec copy -vcodec copy -absf aac_adtstoasc `"$outputFileName`""
 $concatenationCommand = "$ffmpegPath -i `"concat:" + ($tsFiles -join "|") + "`" -acodec copy -vcodec copy `"$outputFileName`""
 
-# Ö´ĞĞºÏ²¢ÃüÁî
+# æ‰§è¡Œåˆå¹¶å‘½ä»¤
 Invoke-Expression $concatenationCommand
 
-# É¾³ıÉú³ÉµÄtsÎÄ¼ş
+# åˆ é™¤ç”Ÿæˆçš„tsæ–‡ä»¶
 Remove-Item $tsFiles
 
-Write-Host "×ª»»ºÍºÏ²¢Íê³É."
+Write-Host "è½¬æ¢å’Œåˆå¹¶å®Œæˆ."
